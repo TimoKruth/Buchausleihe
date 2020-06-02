@@ -1,0 +1,18 @@
+[
+     {
+      "Nummer": 1,
+      "Name": "Buch 1",
+      "Autor": "Peter",
+      "Anzahl": 1,
+      "ausgeliehen": 0,
+      "vorgemerkt": 0
+    },
+    {
+      "Nummer": 2,
+      "Name": "Buch 2",
+      "Autor": "Hans",
+      "Anzahl": 1,
+      "ausgeliehen": 0,
+      "vorgemerkt": 0
+    }
+]
