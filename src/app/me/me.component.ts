@@ -12,39 +12,38 @@ export class MeComponent implements OnInit {
 
   me: model.User;
   books: any;
-  book = {
-    nummer: 99,
-    name:'',
-    autor:'',
-    anzahl: 1
-  };
+  newBook;
+  kats;
 
   constructor(private router: Router, private files : FileService) {}
 
   ngOnInit() {
     this.me = db.User.me;
     this.getBooks();
-    this.getHighNumber();
+    this.newBook = new db.Book();
+    this.files.getKategorien().then(kats => this.kats = kats);
   }
 
   getBooks(){
-    this.files.getBooks().then(books => this.books = books);
+    this.files.getVerlieheneBooks().then(books => this.books = books);
   }
 
-  getHighNumber(){
-    this.files.getLastBook().then(book => this.book.nummer = book.Nummer);
+  gotBookBack(i){
+    let b = this.books[i];
+    db.Book.find().eq('id',b.id).singleResult().then(book => {
+        book.Anzahl = 1;
+        book.Verliehen = false;
+        book.update();
+      }
+    );
   }
 
   add(){
-    this.book.nummer = this.book.nummer + 1;
-    let b = new db.Book({
-      Nummer : this.book.nummer,
-      Name : this.book.name,
-      Autor : this.book.autor,
-      Anzahl : this.book.anzahl
-    });
-    b.insert();
-    this.getHighNumber();
+    this.newBook.insert();
+  }
+
+  setKat(kat){
+    this.newBook.Kategorie = kat;
   }
 
   delete(i){
@@ -61,10 +60,10 @@ export class MeComponent implements OnInit {
   }
 
   setBook(book){
-    this.book.nummer = book.nummer;
-    this.book.name = book.name;
-    this.book.autor = book.autor;
-    this.book.anzahl = book.anzahl;
+    this.newBook.nummer = book.nummer;
+    this.newBook.name = book.name;
+    this.newBook.autor = book.autor;
+    this.newBook.anzahl = book.anzahl;
   }
 
   logout() {

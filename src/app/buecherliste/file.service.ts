@@ -21,6 +21,13 @@ export class FileService implements OnInit{
       .resultList();
   }
 
+  getVerlieheneBooks() : Promise<model.Book> {
+    return db.Book
+      .find()
+      .eq('Verliehen', true)
+      .resultList();
+  }
+
   getBook(bookId){
     return db.Book.load(bookId);
   }

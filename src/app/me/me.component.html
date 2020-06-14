@@ -3,27 +3,34 @@
     <button class="btn btn-info" type="button" (click)="logout()">Logout</button>
   </div>
 <div>
-  <form #form="ngForm">
+  <form #form="ngForm" *ngIf="true">
     <div class="row">
       <div class="form-group col-lg-4">
         <label>Name</label>
-        <input type="text" [(ngModel)]="book.name" class="form-control" name="name" required>
+        <div>
+          <input type="text" [(ngModel)]="newBook.Name" class="form-control" name="name" required>
+        </div>
       </div>
       <div class="form-group col-lg-4">
-        <label>Autor</label>
-        <input type="text" [(ngModel)]="book.autor" class="form-control" name="autor">
-      </div>
-      <div class="form-group col-lg-4">
-        <label>Anzahl</label>
-        <input type="number" [(ngModel)]="book.anzahl" class="form-control" name="anzahl">
+        <label *ngIf="newBook.Kategorie">Kategorie: {{newBook.Kategorie.name}}</label>
+        <label *ngIf="newBook.Kategorie == null">Kategorie wählen</label>
+        <br/>
+        <div ngbDropdown class="d-inline-block">
+          <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>Buchreihe</button>
+          <div ngbDropdownMenu aria-labelledby="dropdownBasic1" style="height: 200px; overflow-y:auto">
+            <button ngbDropdownItem *ngFor="let kat of kats" (click)="setKat(kat)">{{kat.name}} (Stufe: {{kat.Lesestufe}}, {{kat.Zusatzinfo}})</button>
+          </div>
+        </div>
+
       </div>
     </div>
     <div class="row mx-auto">
       <button class="btn btn-primary" type="button" (click)="add()" [disabled]="!form.valid">Hinzufügen</button>
-      <button class="btn btn-primary" type="button" (click)="update()" >Update</button>
     </div>
   </form>
-
+</div>
+  <br/>
+<div>
   <table class="table table-hover" *ngIf="books">
     <thead class="thead-light">
     <tr>
@@ -43,6 +50,7 @@
       <td>{{book.Name}}</td>
       <td><span class="badge badge-success">{{book.Anzahl}}</span></td>
       <td *ngIf="!book.Verliehen"><button class="btn btn-danger" (click)="delete(i)">Löschen</button></td>
+      <td *ngIf="book.Verliehen"><button class="btn btn-danger" (click)="gotBookBack(i)">Zurückgenommen</button></td>
     </tr>
     </tbody>
   </table>
