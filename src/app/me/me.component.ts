@@ -48,7 +48,7 @@ export class MeComponent implements OnInit {
       this.succeeded = true;
       let time = timer(1000,2000);
       this.sub = time.subscribe(val => {
-        if(val > 5){
+        if(val > 3){
           this.succeeded = false;
           this.unsub();
         }
