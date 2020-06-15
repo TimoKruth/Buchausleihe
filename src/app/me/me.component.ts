@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { model, db } from 'baqend';
 import {FileService} from "../buecherliste/file.service";
+import {timer} from "rxjs";
 
 @Component({
   selector: 'app-me',
@@ -14,6 +15,9 @@ export class MeComponent implements OnInit {
   books: any;
   newBook;
   kats;
+  private succeeded: boolean;
+  successMessage = "Buch eingetragen.";
+  sub;
 
   constructor(private router: Router, private files : FileService) {}
 
@@ -38,8 +42,24 @@ export class MeComponent implements OnInit {
     );
   }
 
-  add(){
-    this.newBook.insert();
+  add() {
+    this.newBook.insert().then(() => {
+      this.newBook = new db.Book();
+      this.succeeded = true;
+      let time = timer(1000,2000);
+      this.sub = time.subscribe(val => {
+        if(val > 5){
+          this.succeeded = false;
+          this.unsub();
+        }
+      });
+    });
+  }
+  unsub(){
+    this.sub.unsubscribe();
+  }
+  closeSuccess() {
+    this.succeeded = false;
   }
 
   setKat(kat){

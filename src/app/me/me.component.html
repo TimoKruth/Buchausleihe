@@ -27,6 +27,7 @@
     <div class="row mx-auto">
       <button class="btn btn-primary" type="button" (click)="add()" [disabled]="!form.valid">Hinzufügen</button>
     </div>
+    <ngb-alert *ngIf="succeeded" [type]="'success'" (close)="closeSuccess()">{{ successMessage }}</ngb-alert>
   </form>
 </div>
   <br/>
