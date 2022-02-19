@@ -15,7 +15,7 @@ export class MeComponent implements OnInit {
   books: any;
   newBook;
   kats;
-  private succeeded: boolean;
+  succeeded: boolean;
   successMessage = "Buch eingetragen.";
   sub;
 
