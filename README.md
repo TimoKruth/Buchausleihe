@@ -1,6 +1,6 @@
 # Ausleihe
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.24.
+This project now runs on [Angular CLI](https://github.com/angular/angular-cli) 21.
 
 ## Development server
 
@@ -12,15 +12,35 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+Run `ng build` to create a production build. The output is written to `dist/Ausleihe`.
+
+## Linting
+
+Run `ng lint` to lint the application with ESLint.
 
 ## Running unit tests
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-## Running end-to-end tests
+For a one-shot local run without watch mode:
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+```bash
+CHROME_BIN="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" npm test -- --watch=false --browsers=ChromeHeadless
+```
+
+The current suite is intentionally small and focused on the main application behavior:
+
+- `src/app/app.component.spec.ts`: app shell rendering and configured title.
+- `src/app/buecherliste/*.spec.ts`: category/book loading, lending flow, sorting, notification request, and Baqend query wiring.
+- `src/app/signup/signup.component.spec.ts`: signup, login failure handling, and redirect behavior for logged-in users.
+- `src/app/me/me.component.spec.ts`: admin view initialization, returning books, adding books, and logout.
+- `src/app/chats/**/*.spec.ts`: message loading, route-based detail loading, and image URL creation.
+
+These tests isolate Baqend and HTTP dependencies with mocks, so they run as unit tests and do not require a live backend.
+
+## End-to-end tests
+
+Legacy Protractor-based end-to-end tests were removed during the Angular 21 upgrade because Protractor is end-of-life. No replacement e2e runner is configured yet.
 
 ## Further help
 

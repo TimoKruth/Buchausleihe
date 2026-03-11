@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
-import { Resolve, Router, ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
-import { db, baqend } from 'baqend';
+import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { db } from 'baqend';
 
 db.connect('streaming', true);
 
 @Injectable()
-export class DBReady implements Resolve<baqend> {
-  resolve(route: ActivatedRouteSnapshot): Promise<baqend> {
+export class DBReady  {
+  resolve(_route: ActivatedRouteSnapshot): Promise<any> {
     return db.ready();
   }
 }
 
 @Injectable()
-export class DBLoggedIn implements CanActivate {
+export class DBLoggedIn  {
   constructor(private router: Router) {}
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
+  canActivate(_route: ActivatedRouteSnapshot, _state: RouterStateSnapshot): Promise<boolean> {
     return db.ready().then(() => {
       if (!db.User.me) {
         this.router.navigate(['/signup']);

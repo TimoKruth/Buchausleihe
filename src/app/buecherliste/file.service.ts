@@ -1,27 +1,20 @@
-import {Injectable, OnInit} from '@angular/core';
-import {db, model} from "baqend";
+import { Injectable } from '@angular/core';
+import { db } from "baqend";
 
 @Injectable({
   providedIn: 'root'
 })
-export class FileService implements OnInit{
+export class FileService {
 
   books;
 
-  constructor() {
-  }
-
-  ngOnInit() {
-    this.getBooks().then(b => this.books = b);
-  }
-
-  getBooks() : Promise<model.Book> {
+  getBooks(): Promise<any[]> {
     return db.Book
       .find()
       .resultList();
   }
 
-  getVerlieheneBooks() : Promise<model.Book> {
+  getVerlieheneBooks(): Promise<any[]> {
     return db.Book
       .find()
       .eq('Verliehen', true)
@@ -66,7 +59,7 @@ export class FileService implements OnInit{
       .singleResult();
   }
 
-  getAusleihen() : Promise<model.Ausleihen> {
+  getAusleihen(): Promise<any[]> {
     return db.Ausleihen
       .find()
       .resultList();
@@ -85,7 +78,7 @@ export class FileService implements OnInit{
   }
 
 
-  getLastBook() : Promise<model.Book> {
+  getLastBook(): Promise<any> {
     return db.Book
       .find()
       .descending('nummer')

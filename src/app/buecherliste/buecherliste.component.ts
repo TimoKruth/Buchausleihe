@@ -1,9 +1,8 @@
-import {Component, Directive, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren} from '@angular/core';
-import {FileService} from "./file.service";
+import { Component, Directive, EventEmitter, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { FileService } from "./file.service";
 import db from 'baqend';
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
-import {catchError} from "rxjs/operators";
-import {throwError} from "rxjs";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { throwError } from "rxjs";
 
 
 interface Book{
@@ -19,7 +18,7 @@ interface Book{
 
 export type SortColumn = keyof Book | '';
 export type SortDirection = 'asc' | 'desc' | '';
-const rotate: {[key: string]: SortDirection} = { 'asc': 'desc', 'desc': '', '': 'asc' };
+const rotate: Record<string, SortDirection> = { 'asc': 'desc', 'desc': '', '': 'asc' };
 const compare = (v1: string, v2: string) => v1 < v2 ? -1 : v1 > v2 ? 1 : 0;
 
 export interface SortEvent {
@@ -28,12 +27,13 @@ export interface SortEvent {
 }
 
 @Directive({
-  selector: 'th[sortable]',
-  host: {
-    '[class.asc]': 'direction === "asc"',
-    '[class.desc]': 'direction === "desc"',
-    '(click)': 'rotate()'
-  }
+    selector: 'th[appSortable]',
+    host: {
+        '[class.asc]': 'direction === "asc"',
+        '[class.desc]': 'direction === "desc"',
+        '(click)': 'rotate()'
+    },
+    standalone: false
 })
 export class NgbdSortableHeader {
 
@@ -51,15 +51,16 @@ export class NgbdSortableHeader {
 
 
 @Component({
-  selector: 'app-buecherliste',
-  templateUrl: './buecherliste.component.html',
-  styleUrls: ['./buecherliste.component.css']
+    selector: 'app-buecherliste',
+    templateUrl: './buecherliste.component.html',
+    styleUrls: ['./buecherliste.component.css'],
+    standalone: false
 })
 export class BuecherlisteComponent implements OnInit {
 
-  books: {[id:string]: any;} = [""];
-  kats = [""];
-  schueler:string;
+  books: Record<string, any[]> = {};
+  kats: any[] = [];
+  schueler = '';
   schuelerHinweis: string;
 
   constructor(private files : FileService,
@@ -84,10 +85,10 @@ export class BuecherlisteComponent implements OnInit {
 
   getBooks(){
     let kat;
-    for(kat of this.kats){
+    for (kat of this.kats) {
       this.files.getBooksByKat(kat.id)
         .then(books => {
-          if(books != null){
+          if (books != null && books.length > 0) {
             this.books[books[0].Kategorie.id] = books;
           }
         })
@@ -107,7 +108,7 @@ export class BuecherlisteComponent implements OnInit {
       book.Verliehen = true;
       book.Anzahl = 0;
       book.update();
-      let ausleih = new db.Ausleihen({
+      const ausleih = new db.Ausleihen({
         Buch : book,
         Schueler : this.schueler,
         Zeitpunkt: new Date()
@@ -118,8 +119,8 @@ export class BuecherlisteComponent implements OnInit {
   }
 
   sendAusleiheMail(book){
-    let url = "https://formspree.io/mzbjedjk";
-    let body = {name : this.schueler + " hat Buch ausgeliehen: " + book.Name};
+    const url = "https://formspree.io/mzbjedjk";
+    const body = {name : this.schueler + " hat Buch ausgeliehen: " + book.Name};
     this.http.post(url,body).subscribe(res => {
       return res;
     });
@@ -135,14 +136,13 @@ export class BuecherlisteComponent implements OnInit {
   }
 
 
-  vormerken(id){
-    let book = this.books[id];
+  vormerken(book: any){
     book.Vorgemerkt = true;
     book.vorgemerktFuer = this.schueler;
     book.update();
   }
 
-  @ViewChildren(NgbdSortableHeader) headers: QueryList<NgbdSortableHeader>;
+  @ViewChildren(NgbdSortableHeader) headers!: QueryList<NgbdSortableHeader>;
 
   onSort({column, direction}: SortEvent) {
 
@@ -163,4 +163,3 @@ export class BuecherlisteComponent implements OnInit {
       });
     }
   }}
-

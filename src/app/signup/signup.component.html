@@ -6,12 +6,12 @@
         <form #form="ngForm">
           <div class="row">
             <div class="form-group col-lg-12">
-              <label>Username</label>
-              <input type="text" [(ngModel)]="user.name" class="form-control" name="name" required>
+              <label for="signup-name">Username</label>
+              <input id="signup-name" type="text" [(ngModel)]="user.name" class="form-control" name="name" required>
             </div>
             <div class="form-group col-lg-12">
-              <label>Password</label>
-              <input type="password" [(ngModel)]="user.password" class="form-control" name="password" required>
+              <label for="signup-password">Password</label>
+              <input id="signup-password" type="password" [(ngModel)]="user.password" class="form-control" name="password" required>
             </div>
           </div>
           <div class="pull-right">
