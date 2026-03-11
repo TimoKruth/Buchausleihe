@@ -10,30 +10,24 @@ import {SignupComponent} from "./signup/signup.component";
 import {MeComponent} from "./me/me.component";
 import {FormsModule} from "@angular/forms";
 import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
-import {HttpClientModule} from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    BuecherlisteComponent,
-    MeComponent,
-    SignupComponent,
-    NgbdSortableHeader
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    NgbModule,
-    FormsModule,
-    HttpClientModule
-  ],
-  exports: [
-    NgbdSortableHeader
-  ],
-  providers: [
-    FileService,
-    DB_PROVIDERS
-  ],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        BuecherlisteComponent,
+        MeComponent,
+        SignupComponent,
+        NgbdSortableHeader
+    ],
+    exports: [
+        NgbdSortableHeader
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        AppRoutingModule,
+        NgbModule,
+        FormsModule], providers: [
+        FileService,
+        DB_PROVIDERS,
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule { }

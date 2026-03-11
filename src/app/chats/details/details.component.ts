@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-import { db, model } from 'baqend';
+import { db } from 'baqend';
 
 @Component({
-  selector: 'app-details',
-  templateUrl: './details.component.html',
-  styleUrls: ['./details.component.scss']
+    selector: 'app-details',
+    templateUrl: './details.component.html',
+    styleUrls: ['./details.component.scss'],
+    standalone: false
 })
 export class DetailsComponent implements OnInit {
 
-  public message: model.Message;
+  public message: any;
 
   constructor(private route: ActivatedRoute) {}
 

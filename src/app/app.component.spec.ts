@@ -1,35 +1,35 @@
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ],
-      declarations: [
-        AppComponent
-      ],
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [AppComponent],
+      imports: [RouterTestingModule]
     }).compileComponents();
-  }));
-
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'Ausleihe'`, () => {
+  it('creates the application shell', () => {
     const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('Ausleihe');
+
+    expect(fixture.componentInstance).toBeTruthy();
   });
 
-  it('should render title', () => {
+  it('keeps the configured title', () => {
     const fixture = TestBed.createComponent(AppComponent);
+
+    expect(fixture.componentInstance.title).toBe('Ausleihe');
+  });
+
+  it('renders the router shell and footer branding', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+
     fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('Ausleihe app is running!');
+
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('router-outlet')).not.toBeNull();
+    expect(element.textContent).toContain('Erstellt und betrieben von');
   });
 });

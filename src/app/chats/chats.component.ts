@@ -1,16 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { db, model } from 'baqend';
+import { db } from 'baqend';
 
 @Component({
-  selector: 'app-chats',
-  templateUrl: './chats.component.html',
-  styleUrls: ['./chats.component.scss']
+    selector: 'app-chats',
+    templateUrl: './chats.component.html',
+    styleUrls: ['./chats.component.scss'],
+    standalone: false
 })
 export class ChatsComponent implements OnInit {
 
-  public messages: Array<model.Message>;
-
-  constructor() {}
+  public messages: any[] = [];
 
   getImageUrl(message) {
     return new db.File(message.face).url;

@@ -1,59 +1,76 @@
-  <div class="panel-heading">You are logged in as {{me.username}}</div>
-  <div class="float-right">
-    <button class="btn btn-info" type="button" (click)="logout()">Logout</button>
-  </div>
+<div class="panel-heading">You are logged in as {{me.username}}</div>
+<div class="float-right">
+  <button class="btn btn-info" type="button" (click)="logout()">Logout</button>
+</div>
 <div>
-  <form #form="ngForm" *ngIf="true">
-    <div class="row">
-      <div class="form-group col-lg-4">
-        <label>Name</label>
-        <div>
-          <input type="text" [(ngModel)]="newBook.Name" class="form-control" name="name" required>
-        </div>
-      </div>
-      <div class="form-group col-lg-4">
-        <label *ngIf="newBook.Kategorie">Kategorie: {{newBook.Kategorie.name}}</label>
-        <label *ngIf="newBook.Kategorie == null">Kategorie wählen</label>
-        <br/>
-        <div ngbDropdown class="d-inline-block">
-          <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>Buchreihe</button>
-          <div ngbDropdownMenu aria-labelledby="dropdownBasic1" style="height: 200px; overflow-y:auto">
-            <button ngbDropdownItem *ngFor="let kat of kats" (click)="setKat(kat)">{{kat.name}} (Stufe: {{kat.Lesestufe}}, {{kat.Zusatzinfo}})</button>
+  @if (true) {
+    <form #form="ngForm">
+      <div class="row">
+        <div class="form-group col-lg-4">
+          <label for="new-book-name">Name</label>
+          <div>
+            <input id="new-book-name" type="text" [(ngModel)]="newBook.Name" class="form-control" name="name" required>
           </div>
         </div>
-
+        <div class="form-group col-lg-4">
+          @if (newBook.Kategorie) {
+            <label for="dropdownBasic1">Kategorie: {{newBook.Kategorie.name}}</label>
+          }
+          @if (newBook.Kategorie === null) {
+            <label for="dropdownBasic1">Kategorie wählen</label>
+          }
+          <br/>
+          <div ngbDropdown class="d-inline-block">
+            <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>Buchreihe</button>
+            <div ngbDropdownMenu aria-labelledby="dropdownBasic1" style="height: 200px; overflow-y:auto">
+              @for (kat of kats; track kat) {
+                <button ngbDropdownItem (click)="setKat(kat)">{{kat.name}} (Stufe: {{kat.Lesestufe}}, {{kat.Zusatzinfo}})</button>
+              }
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="row mx-auto">
-      <button class="btn btn-primary" type="button" (click)="add()" [disabled]="!form.valid">Hinzufügen</button>
-    </div>
-    <ngb-alert *ngIf="succeeded" [type]="'success'" (close)="closeSuccess()">{{ successMessage }}</ngb-alert>
-  </form>
+      <div class="row mx-auto">
+        <button class="btn btn-primary" type="button" (click)="add()" [disabled]="!form.valid">Hinzufügen</button>
+      </div>
+      @if (succeeded) {
+        <ngb-alert [type]="'success'" (close)="closeSuccess()">{{ successMessage }}</ngb-alert>
+      }
+    </form>
+  }
 </div>
-  <br/>
+<br/>
 <div>
-  <table class="table table-hover" *ngIf="books">
-    <thead class="thead-light">
-    <tr>
-      <th scope="col">Nummer</th>
-      <th scope="col"></th>
-      <th scope="col">Titel</th>
-      <th scope="col">Verfügbarkeit</th>
-      <th scope="col"></th>
-    </tr>
-    </thead>
-    <tbody >
-    <tr *ngFor="let book of books; let i = index" (click)="setBook(book)">
-      <td scope="row">{{book.Nummer}}</td>
-      <td>
-        <img class="img-fluid rounded mx-auto d-block" src="" >
-      </td>
-      <td>{{book.Name}}</td>
-      <td><span class="badge badge-success">{{book.Anzahl}}</span></td>
-      <td *ngIf="!book.Verliehen"><button class="btn btn-danger" (click)="delete(i)">Löschen</button></td>
-      <td *ngIf="book.Verliehen"><button class="btn btn-danger" (click)="gotBookBack(i)">Zurückgenommen</button></td>
-    </tr>
-    </tbody>
-  </table>
+  @if (books) {
+    <table class="table table-hover">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col">Nummer</th>
+          <th scope="col"></th>
+          <th scope="col">Titel</th>
+          <th scope="col">Verfügbarkeit</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody >
+        @for (book of books; track book; let i = $index) {
+          <tr (click)="setBook(book)">
+            <td>{{book.Nummer}}</td>
+            <td>
+              <img class="img-fluid rounded mx-auto d-block" src="" alt="Buchcover Platzhalter">
+            </td>
+            <td>{{book.Name}}</td>
+            <td><span class="badge badge-success">{{book.Anzahl}}</span></td>
+            @if (!book.Verliehen) {
+              <td><button class="btn btn-danger" (click)="delete(i)">Löschen</button></td>
+            }
+            @if (book.Verliehen) {
+              <td><button class="btn btn-danger" (click)="gotBookBack(i)">Zurückgenommen</button></td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
 
 </div>

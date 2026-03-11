@@ -1,23 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { model, db } from 'baqend';
+import { db } from 'baqend';
 import {FileService} from "../buecherliste/file.service";
 import {timer} from "rxjs";
 
 @Component({
-  selector: 'app-me',
-  templateUrl: './me.component.html',
-  styleUrls: ['./me.component.scss']
+    selector: 'app-me',
+    templateUrl: './me.component.html',
+    styleUrls: ['./me.component.scss'],
+    standalone: false
 })
 export class MeComponent implements OnInit {
 
-  me: model.User;
-  books: any;
-  newBook;
-  kats;
-  succeeded: boolean;
+  me: any;
+  books: any[] = [];
+  newBook: any;
+  kats: any[] = [];
+  succeeded = false;
   successMessage = "Buch eingetragen.";
-  sub;
+  sub: any;
 
   constructor(private router: Router, private files : FileService) {}
 
@@ -33,7 +34,7 @@ export class MeComponent implements OnInit {
   }
 
   gotBookBack(i){
-    let b = this.books[i];
+    const b = this.books[i];
     db.Book.find().eq('id',b.id).singleResult().then(book => {
         book.Anzahl = 1;
         book.Verliehen = false;
@@ -46,7 +47,7 @@ export class MeComponent implements OnInit {
     this.newBook.insert().then(() => {
       this.newBook = new db.Book();
       this.succeeded = true;
-      let time = timer(1000,2000);
+      const time = timer(1000,2000);
       this.sub = time.subscribe(val => {
         if(val > 3){
           this.succeeded = false;

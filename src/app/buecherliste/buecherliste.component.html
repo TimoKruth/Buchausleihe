@@ -4,35 +4,57 @@
   </div>
   <form #form="ngForm">
     <div  class="form-group col-lg-4 mx-auto">
-      <label class="text-white">Name des Schülers: </label>
-      <input type="text" [(ngModel)]="schueler" ngbPopover="{{schuelerHinweis}}" triggers="mouseenter:mouseleave"
-             popoverTitle="Hinweis" class="form-control" name="name" required>
+      <label class="text-white" for="student-name">Name des Schülers: </label>
+      <input id="student-name" type="text" [(ngModel)]="schueler" ngbPopover="{{schuelerHinweis}}" triggers="mouseenter:mouseleave"
+        popoverTitle="Hinweis" class="form-control" name="name" required>
     </div>
-    <div class="table-responsive container-fluid bg-white" *ngFor="let kat of kats; let j = index">
-    <div *ngIf="books[kat.id]">
-      <h3 class="pt-3 pb-3" *ngIf="!kat.Lesestufe">{{kat.name}} {{kat.Zusatzinfo}}</h3>
-      <h3 class="pt-3 pb-3" *ngIf="kat.Lesestufe">{{kat.name}} {{kat.Zusatzinfo}} ({{kat.Lesestufe}}. Lesestufe)</h3>
-      <table class="table table-hover">
-        <thead class="thead-light">
-        <tr>
-          <th scope="col" class="text-center" sortable="Name" (sort)="onSort($event)">Titel</th>
-          <th scope="col" class="text-center" sortable="Verliehen" (sort)="onSort($event)">Verfügbarkeit</th>
-          <th scope="col"></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let book of books[kat.id]; let i = index">
-          <td class="col-8">{{book.Name}}</td>
-          <td *ngIf="!book.Verliehen" class="col-2 text-center"><span class="badge badge-success">{{book.Anzahl}}</span></td>
-          <td *ngIf="book.Verliehen" class="col-2 text-center"><span class="badge badge-danger">{{book.Anzahl}}</span></td>
-          <td *ngIf="!book.Verliehen" class="col-2 text-center"><button class="btn btn-primary" (click)="ausleihen(book.id)" [disabled]="!form.valid">Ausleihen</button></td>
-          <td *ngIf="!book.Vorgemerkt && book.Verliehen" class="col-2 text-center"><button class="btn btn-primary" (click)="vormerken(i)" [disabled]="!form.valid">Vormerken</button></td>
-          <td *ngIf="book.Vorgemerkt && book.Verliehen" class="col-2"></td>
-        </tr>
-        </tbody>
-      </table>
-      <div *ngIf="kat.name=='Schülerbücher'" class="pb-5"></div>
-    </div>
-    </div>
+    @for (kat of kats; track kat; let j = $index) {
+      <div class="table-responsive container-fluid bg-white">
+        @if (books[kat.id]) {
+          <div>
+            @if (!kat.Lesestufe) {
+              <h3 class="pt-3 pb-3">{{kat.name}} {{kat.Zusatzinfo}}</h3>
+            }
+            @if (kat.Lesestufe) {
+              <h3 class="pt-3 pb-3">{{kat.name}} {{kat.Zusatzinfo}} ({{kat.Lesestufe}}. Lesestufe)</h3>
+            }
+            <table class="table table-hover">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col" class="text-center" appSortable="Name" (sort)="onSort($event)">Titel</th>
+                  <th scope="col" class="text-center" appSortable="Verliehen" (sort)="onSort($event)">Verfügbarkeit</th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (book of books[kat.id]; track book; let i = $index) {
+                  <tr>
+                    <td class="col-8">{{book.Name}}</td>
+                    @if (!book.Verliehen) {
+                      <td class="col-2 text-center"><span class="badge badge-success">{{book.Anzahl}}</span></td>
+                    }
+                    @if (book.Verliehen) {
+                      <td class="col-2 text-center"><span class="badge badge-danger">{{book.Anzahl}}</span></td>
+                    }
+                    @if (!book.Verliehen) {
+                      <td class="col-2 text-center"><button class="btn btn-primary" (click)="ausleihen(book.id)" [disabled]="!form.valid">Ausleihen</button></td>
+                    }
+                  @if (!book.Vorgemerkt && book.Verliehen) {
+                    <td class="col-2 text-center"><button class="btn btn-primary" (click)="vormerken(book)" [disabled]="!form.valid">Vormerken</button></td>
+                    }
+                    @if (book.Vorgemerkt && book.Verliehen) {
+                      <td class="col-2"></td>
+                    }
+                  </tr>
+                }
+              </tbody>
+            </table>
+            @if (kat.name === 'Schülerbücher') {
+              <div class="pb-5"></div>
+            }
+          </div>
+        }
+      </div>
+    }
   </form>
 </div>
