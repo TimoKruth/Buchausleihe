@@ -50,6 +50,9 @@
     "typescript-eslint": "^8.57.0"
   },
   "overrides": {
+    "@angular-devkit/build-angular": {
+      "webpack-dev-server": "5.2.6"
+    },
     "@angular/build": {
       "undici": "7.29.0"
     },
