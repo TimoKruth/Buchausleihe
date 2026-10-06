@@ -57,7 +57,7 @@
       "undici": "7.29.0"
     },
     "@angular/cli": {
-      "@modelcontextprotocol/sdk": "1.30.0"
+      "@modelcontextprotocol/sdk": "1.31.0"
     },
     "@hono/node-server": "2.1.0",
     "baqend": {
