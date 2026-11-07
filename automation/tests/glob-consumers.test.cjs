@@ -57,6 +57,18 @@ test('Node package tooling preserves discovery, cache verification and ignore ru
   assert.ok(!files.includes('ignored.txt'));
 });
 
+test('the coverage reporter retains its legacy Minimatch calling convention', () => {
+  const { overrideThresholds } = require('karma-coverage-istanbul-reporter/src/util');
+  const basePath = path.resolve('fixture');
+  const overrides = { 'src/**/*.ts': { statements: 80 }, '**/*': { statements: 20 } };
+  assert.deepEqual(overrideThresholds(path.join(basePath, 'src/example.ts'), overrides, basePath),
+    { statements: 80 });
+  assert.deepEqual(overrideThresholds(path.join(basePath, 'src/example.html'), overrides, basePath),
+    { statements: 20 });
+  assert.deepEqual(overrideThresholds('example.ts', { 'src/**/*.ts': { statements: 80 } }, basePath),
+    {});
+});
+
 test('Baqend CLI discovers and uploads the selected fixture files', async (t) => {
   const cwd = fixture(t);
   fs.mkdirSync(path.join(cwd, 'nested'));
