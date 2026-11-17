@@ -59,6 +59,14 @@ fi
 
   cd "$REPO_ROOT"
 
+  # Chrome (including headless mode) aborts inside the macOS Codex sandbox.
+  # Keep accidental Karma launches from starting the real browser. Set these
+  # again in Codex's shell policy so child commands retain the guard.
+  export CHROME_BIN=/usr/bin/false
+  export CHROMIUM_BIN=/usr/bin/false
+  export CHROME_CANARY_BIN=/usr/bin/false
+  print -- "Local browser tests disabled in scheduled maintenance; require external verification."
+
   if [[ "${CODEX_MAINTENANCE_VALIDATE_ONLY:-0}" == "1" ]]; then
     print -- "Validation succeeded; Codex executable: $codex_bin"
     exit 0
@@ -71,6 +79,9 @@ fi
     --sandbox workspace-write \
     --config 'sandbox_workspace_write.network_access=true' \
     --config 'model_reasoning_effort="high"' \
+    --config 'shell_environment_policy.set.CHROME_BIN="/usr/bin/false"' \
+    --config 'shell_environment_policy.set.CHROMIUM_BIN="/usr/bin/false"' \
+    --config 'shell_environment_policy.set.CHROME_CANARY_BIN="/usr/bin/false"' \
     --cd "$REPO_ROOT" \
     --ephemeral \
     --ignore-user-config \

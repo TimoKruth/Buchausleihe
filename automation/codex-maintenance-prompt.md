@@ -25,6 +25,32 @@ repository.
 - Do not create comments, branches, commits, or pull requests when no action is
   needed.
 
+## Local browser restriction
+
+This scheduled job runs inside a macOS Codex sandbox. Chrome and ChromeHeadless
+abort here during macOS application registration and Crashpad initialization;
+Karma retries create repeated desktop crash notifications. This is a known host
+limitation, not a repository regression to reproduce on every run.
+
+- Do not launch any local browser, directly or through Karma, `npm test`,
+  `ng test`, Playwright, Puppeteer, or browser tools. This applies to the main
+  checkout, temporary clones, PR checkouts, and diagnostic probes.
+- The runner sets `CHROME_BIN`, `CHROMIUM_BIN`, and `CHROME_CANARY_BIN` to
+  `/usr/bin/false` as an accidental-launch guard. Do not unset or override them,
+  use an absolute browser path, download a browser, or retry with other flags.
+- Do not disable the Codex sandbox or change Chrome/macOS crash reporting to
+  work around this restriction.
+- Run non-browser checks locally. For browser test evidence, inspect existing
+  CI checks for the exact commit being reviewed. Count them only when they
+  actually run the relevant test suite and pass; missing, pending, unrelated,
+  or old-commit checks are not verification.
+- Report browser tests as **not run locally (known macOS sandbox limitation)**.
+  Never report skipped tests as passing. Without successful relevant CI or
+  explicit human test evidence for the same commit, leave any change requiring
+  browser verification unmerged and state the outstanding test requirement.
+- Do not repeat a GitHub comment about this unchanged limitation if an existing
+  comment already covers the same commit and verification state.
+
 ## Daily workflow
 
 1. Read all applicable `AGENTS.md` instructions. Confirm the repository and
@@ -34,14 +60,16 @@ repository.
    diffs/checks, and open Dependabot alerts. Use the authenticated `gh` CLI and
    GitHub API. Also inspect the recent commit history and current dependency
    manifests.
-3. Run the appropriate baseline checks, including `npm audit`, build, lint, and
-   the non-interactive test suite. Do not start watch-mode or long-lived
-   development servers.
+3. Run the appropriate non-browser baseline checks, including `npm audit`,
+   build, lint, and non-browser tests if available. Follow the local browser
+   restriction above for this project's Karma suite. Do not start watch-mode
+   or long-lived development servers.
 4. Review every open pull request:
    - For Dependabot or other narrowly scoped dependency/security PRs, verify the
      complete diff and dependency paths. Rebase, replace, or fix the PR when
      needed. Merge only when the change is minimal, all available checks pass,
-     local build/lint/tests pass, and no unresolved risk remains.
+     local build/lint pass, relevant tests are verified under the local browser
+     restriction above, and no unresolved risk remains.
    - You may use an admin merge bypass only for a narrowly scoped dependency or
      security change that you have independently verified. Never bypass checks
      or review protection for feature or behavior changes.
@@ -54,7 +82,8 @@ repository.
    problem so duplicate PRs are not created.
 6. For every change, inspect the final diff, run `git diff --check`, reinstall
    dependencies reproducibly when manifests changed, and rerun all relevant
-   verification. Commit and push only verified changes. Create a concise PR
+   verification permitted by the local browser restriction above. Commit and
+   push only verified changes. Create a concise PR
    explaining the issue, risk, exact verification, and any remaining caveats.
 7. Merge your own maintenance PR only when it is a minimal, high-confidence
    dependency/security or non-behavioral repair and all verification succeeds.
@@ -68,5 +97,5 @@ repository.
    branch and worktree are clean.
 
 If a command, authentication step, test, or merge is blocked, investigate safe
-in-scope alternatives. Do not weaken safety controls merely to make the run
-succeed.
+in-scope alternatives while respecting the local browser restriction above.
+Do not weaken safety controls merely to make the run succeed.

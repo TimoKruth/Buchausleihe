@@ -2,6 +2,34 @@
 
 This project now runs on [Angular CLI](https://github.com/angular/angular-cli) 21.
 
+## Setup and verification
+
+Use Node.js 24 LTS (`nvm install && nvm use`) and the npm version declared in
+`package.json`:
+
+```bash
+npm install --global npm@11.20.0
+npm ci
+npm run lint
+npm run test:security
+npm run build
+npm run build:production
+npm run test:ci
+npm audit
+```
+
+`test:ci` needs Chrome or Chromium. Set `CHROME_BIN` if it is not automatically
+detected. GitHub Actions runs these checks, including the application tests in
+ChromeHeadless, for pushes and pull requests. Security regression tests cover
+Glob cancellation, Minimatch expansion limits, file-discovery compatibility,
+and the locally patched Picomatch dependency.
+
+The Picomatch advisory GHSA-fc5q-39xc-vjpf has no upstream patched release as of
+2026-11-17. All consumers use the source-vendored security fork documented in
+[vendor/picomatch/SECURITY-PATCH.md](vendor/picomatch/SECURITY-PATCH.md). Replace
+it with a verified upstream fix when available; do not remove the override
+without rerunning the security tests.
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
@@ -12,7 +40,9 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 ## Build
 
-Run `ng build` to create a production build. The output is written to `dist/Ausleihe`.
+Run `npm run build:production` to create an optimized production build. The
+browser files are written to `dist/Ausleihe/browser`. `npm run build` also
+checks the default build configuration.
 
 ## Linting
 
